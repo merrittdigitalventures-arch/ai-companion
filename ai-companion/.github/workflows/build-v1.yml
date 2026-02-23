@@ -1,0 +1,68 @@
+name: App Store Build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web Assets
+        run: npm run build
+        env:
+          VITE_GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+      - name: Reset & Sync Capacitor
+        run: |
+          rm -rf ios
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Force Share Scheme
+        run: |
+          ruby -e '
+          require "fileutils"
+          path = "ios/App/App.xcodeproj/xcshareddata/xcschemes"
+          FileUtils.mkdir_p(path)
+          scheme_content = %Q{<?xml version="1.0" encoding="UTF-8"?>
+          <Scheme LastUpgradeVersion="1600">
+            <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES">
+              <BuildActionEntries>
+                <BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES" buildForArchiving="YES" buildForAnalyzing="YES">
+                  <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="App" BlueprintName="App" ReferencedContainer="container:App.xcodeproj"></BuildableReference>
+                </BuildActionEntry>
+              </BuildActionEntries>
+            </BuildAction>
+          </Scheme>}
+          File.write("#{path}/App.xcscheme", scheme_content)
+          puts "Shared scheme created at #{path}"'
+
+      - name: Build Simulator App
+        run: |
+          # Build specifically for the Simulator (no signing required!)
+          xcodebuild build \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -derivedDataPath build_output \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package for Appetize
+        run: |
+          # Find the .app folder and zip it
+          APP_PATH=$(find build_output/Build/Products/Debug-iphonesimulator -name "*.app" | head -n 1)
+          cd $(dirname "$APP_PATH")
+          zip -r ../../../appetize_build.zip $(basename "$APP_PATH")
+
+      - name: Upload for Appetize
+        uses: actions/upload-artifact@v4
+        with:
+          name: Appetize-Zip
+          path: appetize_build.zip

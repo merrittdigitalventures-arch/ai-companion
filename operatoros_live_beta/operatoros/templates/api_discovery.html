@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OperatorOS API Discovery</title>
+</head>
+<body>
+    <h1>API Discovery</h1>
+    <form method="POST">
+        <label>Login URL:</label><br>
+        <input type="text" name="login_url" placeholder="https://example.com/login" required><br><br>
+        <label>Username:</label><br>
+        <input type="text" name="username" required><br><br>
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+        <button type="submit">Start Discovery</button>
+    </form>
+
+    <h2>Discovered API Endpoints:</h2>
+    <ul>
+        {% for api in apis %}
+        <li>{{ api }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

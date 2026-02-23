@@ -1,0 +1,49 @@
+name: Appetize Simulator Build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web Assets
+        run: npm run build
+        env:
+          VITE_GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+      - name: Reset & Sync Capacitor
+        run: |
+          rm -rf ios
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Build for Simulator
+        run: |
+          # This is the magic command for Appetize
+          xcodebuild build \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -derivedDataPath build_output \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package for Appetize
+        run: |
+          # Create a proper ZIP of the .app folder
+          cd build_output/Build/Products/Debug-iphonesimulator
+          zip -r ../../../appetize_sim_build.zip App.app
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Simulator-Zip
+          path: appetize_sim_build.zip

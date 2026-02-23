@@ -1,0 +1,25 @@
+name: App Store Build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        run: npm install
+      - name: Build Web Assets
+        run: npm run build
+      - name: Capacitor Sync
+        run: |
+          npx cap add ios
+          npx cap sync ios
+      - name: Archive Build
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+          -scheme App -sdk iphoneos -configuration Release \
+          archive -archivePath App.xcarchive CODE_SIGNING_ALLOWED=NO
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Ready-For-Submission
+          path: App.xcarchive

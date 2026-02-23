@@ -1,0 +1,12 @@
+{
+  "appId": "com.merrittdigital.companion",
+  "appName": "ai-companion",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "always"
+  }
+}

@@ -1,0 +1,21 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+# Navigate to project folder
+cd ~/operatoros_live_beta || exit
+
+# Activate virtual environment
+source ./venv/bin/activate
+
+# Kill any process using port 5000
+fuser -k 5000/tcp 2>/dev/null
+
+# Start OperatorOS Flask GUI in background
+nohup python ./operatoros/web_gui.py > nohup.out 2>&1 &
+
+# Wait 2 seconds for server to spin up
+sleep 2
+
+# Launch Termux browser
+termux-open-url http://127.0.0.1:5000
+
+echo "OperatorOS GUI started and browser launched at http://127.0.0.1:5000"

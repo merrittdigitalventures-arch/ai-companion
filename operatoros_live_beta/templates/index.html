@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OperatorOS – Credentials</title>
+    <script>
+        async function submitCredentials() {
+            const form = document.getElementById("credentialsForm");
+            const data = new FormData(form);
+            const res = await fetch("/intake", {method: "POST", body: data});
+            const result = await res.json();
+            document.getElementById("status").innerText = result.message;
+            pollStatus();
+        }
+
+        async function pollStatus() {
+            const res = await fetch("/status");
+            const data = await res.json();
+            document.getElementById("status").innerText = data.status + " – " + data.message;
+            setTimeout(pollStatus, 1000);
+        }
+
+        window.onload = pollStatus;
+    </script>
+</head>
+<body>
+<h2>OperatorOS – Credentials & Capabilities</h2>
+<form id="credentialsForm" onsubmit="event.preventDefault(); submitCredentials();">
+    <h3>Capabilities</h3>
+    <label><input type="checkbox" name="cap_openai"> OpenAI – LLM</label><br>
+    <label><input type="checkbox" name="cap_x_read"> X (Twitter) – Read-only</label><br>
+    <label><input type="checkbox" name="cap_x_user"> X (Twitter) – User actions</label><br>
+    <label><input type="checkbox" name="cap_google"> Google API</label><br>
+    <label><input type="checkbox" name="cap_reddit"> Reddit API</label><br><br>
+
+    <h3>API Keys</h3>
+    <label>OpenAI API Key</label><br>
+    <input name="openai_key" type="password"><br><br>
+
+    <label>X API Bearer Token</label><br>
+    <input name="x_bearer" type="password"><br><br>
+
+    <label>X API Consumer Key</label><br>
+    <input name="x_consumer_key" type="password"><br><br>
+
+    <label>X API Consumer Secret</label><br>
+    <input name="x_consumer_secret" type="password"><br><br>
+
+    <label>X Access Client ID</label><br>
+    <input name="x_access_id" type="password"><br><br>
+
+    <label>X Access Client Secret</label><br>
+    <input name="x_access_secret" type="password"><br><br>
+
+    <label>Google API Key</label><br>
+    <input name="google_key" type="password"><br><br>
+
+    <label>Reddit API Key</label><br>
+    <input name="reddit_key" type="password"><br><br>
+
+    <button type="submit">Save & Continue</button>
+</form>
+<p id="status">Initializing…</p>
+</body>
+</html>

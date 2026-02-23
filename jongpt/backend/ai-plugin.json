@@ -1,0 +1,15 @@
+{
+  "name": "JonGPT",
+  "description": "ChatGPT plugin for JonGPT",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://curly-mule-37.loca.lt/openapi.json",
+    "is_user_authenticated": true
+  },
+  "logo_url": "https://example.com/logo.png",
+  "contact_email": "you@example.com",
+  "legal_info_url": "https://example.com/legal"
+}

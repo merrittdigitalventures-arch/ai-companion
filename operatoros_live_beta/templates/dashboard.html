@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OperatorOS – Dashboard</title>
+    <style>
+        .status { font-weight: bold; }
+        .log { font-family: monospace; white-space: pre-wrap; border:1px solid #ccc; padding:5px; max-height:300px; overflow-y:auto; }
+        .api-status { margin-bottom: 5px; }
+        button { padding:5px 10px; margin-top:5px; }
+    </style>
+    <script>
+        async function pollStatus() {
+            const res = await fetch("/dashboard_status");
+            const data = await res.json();
+            let apiHtml = '';
+            for (const [api, status] of Object.entries(data.api_status)) {
+                apiHtml += `<div class="api-status">${api}: ${status}</div>`;
+            }
+            document.getElementById("apiStatus").innerHTML = apiHtml;
+            document.getElementById("logs").innerText = data.logs.join("\n");
+            setTimeout(pollStatus, 1000);
+        }
+
+        async function startWorkflow() {
+            await fetch("/start_workflow", {method:"POST"});
+        }
+
+        async function stopWorkflow() {
+            await fetch("/stop_workflow", {method:"POST"});
+        }
+
+        window.onload = pollStatus;
+    </script>
+</head>
+<body>
+<h2>OperatorOS – Live Dashboard</h2>
+<div id="apiStatus"></div>
+<button onclick="startWorkflow()">Start Workflow</button>
+<button onclick="stopWorkflow()">Stop Workflow</button>
+<h3>Logs</h3>
+<div id="logs" class="log"></div>
+</body>
+</html>

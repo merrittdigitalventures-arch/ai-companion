@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "JonGPT Plugin",
+    "description": "ChatGPT plugin for JonGPT",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/ask": {
+      "post": {
+        "summary": "Ask JonGPT a question",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "string" },
+                  "question": { "type": "string" }
+                },
+                "required": ["question"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer from JonGPT",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "answer": { "type": "string" } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

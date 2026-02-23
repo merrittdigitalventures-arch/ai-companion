@@ -1,0 +1,38 @@
+name: App Store Build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Node & Sharp
+        run: |
+          npm install
+          npm install @capacitor/assets --save-dev
+
+      - name: Generate Assets
+        run: |
+          mkdir -p assets
+          # Note: This will look for assets/icon-only.png in your GitHub repo
+          npx @capacitor/assets generate --iconBackgroundColor '#000000'
+
+      - name: Web Build
+        run: npm run build
+
+      - name: Capacitor Sync
+        run: |
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Xcode Archive
+        run: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+          -scheme App -sdk iphoneos -configuration Release \
+          archive -archivePath App.xcarchive CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload Finished IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Ready-For-Store
+          path: App.xcarchive

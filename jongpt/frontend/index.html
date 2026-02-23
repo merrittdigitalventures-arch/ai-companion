@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JonGPT Chat</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 2rem; background: #f0f0f0; }
+h1 { color: #4CAF50; }
+#chat { max-width: 600px; margin: auto; }
+.message { padding: 0.5rem 1rem; margin: 0.5rem 0; border-radius: 5px; }
+.user { background-color: #d1e7ff; text-align: right; }
+.bot { background-color: #e2ffd1; text-align: left; }
+input, button { padding: 0.5rem; font-size: 1rem; margin-top: 0.5rem; width: calc(100% - 1rem); }
+</style>
+</head>
+<body>
+<div id="chat">
+  <h1>JonGPT Chat</h1>
+  <div id="messages"></div>
+  <input type="text" id="question" placeholder="Ask your question here...">
+  <button onclick="sendQuestion()">Send</button>
+</div>
+
+<script>
+async function sendQuestion() {
+    const input = document.getElementById('question');
+    const question = input.value.trim();
+    if(!question) return;
+
+    // Display user message
+    const messagesDiv = document.getElementById('messages');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user';
+    userMsg.textContent = question;
+    messagesDiv.appendChild(userMsg);
+
+    // Call backend API
+    try {
+        const res = await fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, response: "Processing..." })
+        });
+        const data = await res.json();
+
+        // Display bot message
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = data.status === 'logged' ? "Answer logged successfully ✅" : "Error logging answer ❌";
+        messagesDiv.appendChild(botMsg);
+    } catch (err) {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = "Error contacting backend ❌";
+        messagesDiv.appendChild(botMsg);
+        console.error(err);
+    }
+
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+</script>
+</body>
+</html>
+EOFcat << 'EOF' > ~/jongpt/frontend/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JonGPT Chat</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 2rem; background: #f0f0f0; }
+h1 { color: #4CAF50; }
+#chat { max-width: 600px; margin: auto; }
+.message { padding: 0.5rem 1rem; margin: 0.5rem 0; border-radius: 5px; }
+.user { background-color: #d1e7ff; text-align: right; }
+.bot { background-color: #e2ffd1; text-align: left; }
+input, button { padding: 0.5rem; font-size: 1rem; margin-top: 0.5rem; width: calc(100% - 1rem); }
+</style>
+</head>
+<body>
+<div id="chat">
+  <h1>JonGPT Chat</h1>
+  <div id="messages"></div>
+  <input type="text" id="question" placeholder="Ask your question here...">
+  <button onclick="sendQuestion()">Send</button>
+</div>
+
+<script>
+async function sendQuestion() {
+    const input = document.getElementById('question');
+    const question = input.value.trim();
+    if(!question) return;
+
+    // Display user message
+    const messagesDiv = document.getElementById('messages');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user';
+    userMsg.textContent = question;
+    messagesDiv.appendChild(userMsg);
+
+    // Call backend API
+    try {
+        const res = await fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, response: "Processing..." })
+        });
+        const data = await res.json();
+
+        // Display bot message
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = data.status === 'logged' ? "Answer logged successfully ✅" : "Error logging answer ❌";
+        messagesDiv.appendChild(botMsg);
+    } catch (err) {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = "Error contacting backend ❌";
+        messagesDiv.appendChild(botMsg);
+        console.error(err);
+    }
+
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+</script>
+</body>
+</html>
+EOFcat << 'EOF' > ~/jongpt/frontend/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JonGPT Chat</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 2rem; background: #f0f0f0; }
+h1 { color: #4CAF50; }
+#chat { max-width: 600px; margin: auto; }
+.message { padding: 0.5rem 1rem; margin: 0.5rem 0; border-radius: 5px; }
+.user { background-color: #d1e7ff; text-align: right; }
+.bot { background-color: #e2ffd1; text-align: left; }
+input, button { padding: 0.5rem; font-size: 1rem; margin-top: 0.5rem; width: calc(100% - 1rem); }
+</style>
+</head>
+<body>
+<div id="chat">
+  <h1>JonGPT Chat</h1>
+  <div id="messages"></div>
+  <input type="text" id="question" placeholder="Ask your question here...">
+  <button onclick="sendQuestion()">Send</button>
+</div>
+
+<script>
+async function sendQuestion() {
+    const input = document.getElementById('question');
+    const question = input.value.trim();
+    if(!question) return;
+
+    // Display user message
+    const messagesDiv = document.getElementById('messages');
+    const userMsg = document.createElement('div');
+    userMsg.className = 'message user';
+    userMsg.textContent = question;
+    messagesDiv.appendChild(userMsg);
+
+    // Call backend API
+    try {
+        const res = await fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, response: "Processing..." })
+        });
+        const data = await res.json();
+
+        // Display bot message
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = data.status === 'logged' ? "Answer logged successfully ✅" : "Error logging answer ❌";
+        messagesDiv.appendChild(botMsg);
+    } catch (err) {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        botMsg.textContent = "Error contacting backend ❌";
+        messagesDiv.appendChild(botMsg);
+        console.error(err);
+    }
+
+    input.value = '';
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+</script>
+</body>
+</html>

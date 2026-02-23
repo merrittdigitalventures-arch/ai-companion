@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OperatorOS Dashboard</title>
+<style>
+body { font-family: sans-serif; background: #111; color: #eee; padding: 20px; }
+h1 { color: #4CAF50; }
+button { padding: 10px 20px; margin: 5px; background: #333; color: #eee; border: none; cursor: pointer; }
+button:hover { background: #4CAF50; }
+#logs { background: #222; padding: 10px; height: 300px; overflow-y: scroll; font-family: monospace; }
+form { margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<h1>OperatorOS Dashboard</h1>
+<p>Status: <strong>{{ "Running" if running else "Stopped" }}</strong></p>
+
+<h3>Controls</h3>
+<a href="/control/restart"><button>Restart OperatorOS</button></a>
+<a href="/control/stop"><button>Stop OperatorOS</button></a>
+
+<h3>Run Shell Command</h3>
+<form method="post" action="/run_command">
+    <input type="text" name="command" placeholder="Enter command" style="width:300px">
+    <button type="submit">Run</button>
+</form>
+
+<h3>Live Logs (last 50 lines)</h3>
+<div id="logs">
+{% for line in logs %}
+{{ line }}<br>
+{% endfor %}
+</div>
+
+<script>
+setInterval(() => {
+    fetch('/')
+    .then(response => response.text())
+    .then(html => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, 'text/html');
+        document.getElementById('logs').innerHTML = doc.getElementById('logs').innerHTML;
+    });
+}, 5000);
+</script>
+</body>
+</html>

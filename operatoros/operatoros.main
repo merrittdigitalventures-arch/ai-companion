@@ -1,0 +1,50 @@
+mkdir -p ~/operatoros && cat > ~/operatoros/operatoros/main.py << 'EOF'
+import json
+import os
+from operatoros.state import load_state, save_state, advance_day
+from operatoros.niche_research import get_top_5_niches
+from operatoros.picker import pick_niche
+from operatoros.bundle_generator import generate_bundle
+from operatoros.analytics import summarize_run
+from operatoros.logger import log_run
+
+STATE_FILE = "data/state.json"
+
+def run():
+    # Load or initialize state
+    state = load_state(STATE_FILE)
+    day = state.get("day", 1)
+
+    print(f"\n{'─'*18} OperatorOS — Day {day} {'─'*18}")
+    mode = "AUTOPICK" if state.get("autopick") else "MANUAL"
+    print(f"Mode: {mode}")
+    print(f"Daily limit: 1 niche\n")
+
+    print("Researching top niches by revenue potential...\n")
+    top_5 = get_top_5_niches()
+
+    # Pick niche
+    chosen = pick_niche(top_5, state)
+    print(f"\nSelected niche: {chosen['niche']} (Revenue score: {chosen['revenue_score']})\n")
+
+    # Generate bundle
+    print("Generating asset bundle...")
+    bundle = generate_bundle(chosen)
+    for asset_type, title in bundle.items():
+        print(f" • {asset_type}: {title}")
+    
+    # Summarize run
+    summary = summarize_run(day, chosen, bundle)
+
+    # Log run
+    log_run(summary, state)
+
+    # Advance day and save
+    advance_day(state)
+    save_state(STATE_FILE, state)
+
+if __name__ == "__main__":
+    if not os.path.exists("data"):
+        os.makedirs("data")
+    run()
+EOF
